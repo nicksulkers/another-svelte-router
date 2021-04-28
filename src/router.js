@@ -21,6 +21,7 @@ function extractParams(path) {
 export default {
 	_currentRoute: null,
 	params: {},
+	query: {},
 	_routes: [],
 	_eventHandlers: {},
 	add: function (path, ...args) {
@@ -140,6 +141,11 @@ export default {
 
 			function pickRoute() {
 				_this._currentRoute = route;
+				_this.query = {};
+				let searchParams = new URLSearchParams(location.search);
+				for(let pair of searchParams.entries()) {
+					_this.query[pair[0]] = pair[1];
+				}
 				_this._trigger('afterRouteChange', [_this._currentRoute]);
 			}
 

@@ -130,6 +130,7 @@ export default {
 			if (!route)
 				throw new Error(`No route is valid for location '${url}'`);
 
+			_this.params = {};
 			let matchedParamValues = paramsMap.get(route);
 			if (matchedParamValues) {
 				let paramNames = extractParams(route.path);

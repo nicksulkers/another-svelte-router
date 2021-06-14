@@ -83,9 +83,9 @@ export default {
 		}
 	},
 	navigate: function (destination, options) {
-		options = options || {
+		options = Object.assign({
 			type: 'push' // internal, external, replace, push
-		};
+		}, options || {});
 		let url;
 		if (destination.match(/^(https?:)?\/\//i))
 			url = new URL(destination);

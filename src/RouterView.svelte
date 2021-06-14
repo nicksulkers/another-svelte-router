@@ -8,10 +8,10 @@
 
 	let component;
 	router.on('afterRouteChange', route => {
-		if(component === route.component) {
+		if (component === route.component) {
 			component = null;
 			requestAnimationFrame(() => component = route.component);
-		}else component = route.component;
+		} else component = route.component;
 	});
 	router._updateCurrentRoute(path);
 </script>

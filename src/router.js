@@ -144,7 +144,7 @@ export default {
 				_this._currentRoute = route;
 				_this.query = {};
 				let searchParams = new URLSearchParams(location.search);
-				for(let pair of searchParams.entries()) {
+				for (let pair of searchParams.entries()) {
 					_this.query[pair[0]] = pair[1];
 				}
 				_this._trigger('afterRouteChange', [_this._currentRoute]);
@@ -169,7 +169,7 @@ export default {
 					}
 					if (result === true) return nextMiddleware();
 					if (result === false) return nextRoute();
-				}else nextMiddleware();
+				} else nextMiddleware();
 			})();
 			return _this;
 		})();

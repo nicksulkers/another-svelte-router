@@ -1,10 +1,9 @@
 <script>
 	import router from './router.js';
 
-	let path;
-
-	if(!path)
-		path = location.pathname;
+	export let url;
+	if (!url)
+		url = location.href;
 
 	let component;
 	router.on('afterRouteChange', route => {
@@ -13,7 +12,9 @@
 			requestAnimationFrame(() => component = route.component);
 		} else component = route.component;
 	});
-	router._updateCurrentRoute(path);
+	router._updateCurrentRoute({
+		url, meta: {}
+	});
 </script>
 
 {#if component}

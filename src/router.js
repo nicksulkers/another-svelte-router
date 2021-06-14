@@ -100,18 +100,27 @@ export default {
 		if (url.protocol !== location.protocol || url.hostname !== location.hostname || options.type === 'external')
 			location.href = url.href;
 		else {
-			if(options.type !== 'internal')
-				history[options.method === 'replace' ? 'replaceState' : 'pushState']({url: url.href}, '', url.pathname + url.search);
-			this._updateCurrentRoute(url.pathname);
+			let state = {
+				url: url.href,
+				meta: options.meta || {}
+			};
+			if (options.type !== 'internal')
+				history[options.type === 'replace' ? 'replaceState' : 'pushState'](state, '', url.href);
+			this._updateCurrentRoute(state);
 		}
 		return this;
 	},
-	_updateCurrentRoute: function (url) {
-		url = url || location.pathname;
+	_updateCurrentRoute: function (state) {
+		let url = state?.url || location.href;
+		if (url.match(/^(https?:)?\/\//i))
+			url = new URL(url);
+		else
+			url = new URL(url, location.href);
+
 		let _this = this;
 		let paramsMap = new WeakMap();
 
-		_this._trigger('beforeRouteChange', [url]);
+		_this._trigger('beforeRouteChange', [url.href]);
 
 		let potentialRoutes = [];
 		for (let route of _this._routes) {
@@ -120,7 +129,7 @@ export default {
 				continue;
 			}
 
-			let match = url.match(pathToRegex(route.path));
+			let match = url.pathname.match(pathToRegex(route.path));
 			if (match) {
 				potentialRoutes.push(route)
 				paramsMap.set(route, match);
@@ -128,12 +137,12 @@ export default {
 		}
 
 		if (!potentialRoutes.length)
-			throw new Error(`No route matches location '${url}'`);
+			throw new Error(`No route matches location '${url.pathname}'`);
 
 		(function nextRoute() {
 			let route = potentialRoutes.shift();
 			if (!route)
-				throw new Error(`No route is valid for location '${url}'`);
+				throw new Error(`No route is valid for location '${url.pathname}'`);
 
 			_this.params = {};
 			let matchedParamValues = paramsMap.get(route);
@@ -147,6 +156,7 @@ export default {
 
 			function pickRoute() {
 				_this._currentRoute = route;
+				_this.meta = state?.meta || {};
 				_this.query = {};
 				let searchParams = new URLSearchParams(location.search);
 				for (let pair of searchParams.entries()) {

@@ -4,7 +4,7 @@ import links from './src/links.js';
 import link from './src/link.js';
 
 window.addEventListener('popstate', (event) => {
-	router._updateCurrentRoute();
+	router._updateCurrentRoute(event.state);
 });
 
 export {

@@ -86,6 +86,11 @@ export default {
 		options = Object.assign({
 			type: 'push' // internal, external, replace, push
 		}, options || {});
+
+		if (options.params)
+			for (let param in options.params)
+				destination = destination.replace(':' + param, options.params[param]);
+
 		let url;
 		if (destination.match(/^(https?:)?\/\//i))
 			url = new URL(destination);
